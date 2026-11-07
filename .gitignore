@@ -1,0 +1,10 @@
+node_modules/
+lib/
+dist/
+*.tgz
+*.log
+.env*
+.npmrc
+starpost-credential.json
+starpost-identity.json
+*.sqlite*

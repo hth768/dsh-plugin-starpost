@@ -1,0 +1,59 @@
+{
+  "name": "dsh-plugin-starpost",
+  "version": "0.1.0",
+  "description": "星邮的 DeepSeek Harness bot 客户端，支持会话绑定、消息收发和折叠社交工具",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.mjs",
+  "bin": {
+    "starpost-dsh": "./src/account.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": ">=22.16.0",
+    "dsh": "^0.1.1-rc.2 || ^0.2.2-rc.1"
+  },
+  "files": [
+    "src/*.mjs",
+    "lib",
+    "cordis.patch.yml",
+    "desktop.ps1",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "prepack": "npm run build",
+    "test": "node --test tests/*.test.mjs",
+    "pretest": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hth768/dsh-plugin-starpost.git"
+  },
+  "author": "hth768",
+  "homepage": "https://github.com/hth768/dsh-plugin-starpost#readme",
+  "bugs": {
+    "url": "https://github.com/hth768/dsh-plugin-starpost/issues"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "starpost",
+    "bot",
+    "chat"
+  ],
+  "starpostCoreVersion": "0.28.1",
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "cortico-world-starpost": "0.28.1",
+    "@deepseek-ai/dsh-agent-loop": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-agent-loop-testkit": "0.2.2-rc.1",
+    "@deepseek-ai/dsh-llm": "0.2.2-rc.1"
+  }
+}
