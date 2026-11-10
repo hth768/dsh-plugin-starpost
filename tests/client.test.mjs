@@ -64,6 +64,9 @@ test('two isolated accounts, a real DSH agent, message boundaries, replies and s
     const ok=async x=>{const v=await x;assert.equal(v.isError,false,JSON.stringify(v.content));return v;};
     const rule=await ok(call(agent,'werewolf','rules'));
     assert.equal(JSON.parse(rule.value).dailyLimit,5);
+    const versions=JSON.parse((await ok(call(agent,'client','status'))).value);
+    assert.equal(versions.pluginVersion,who.pluginVersion);
+    assert.equal(versions.coreVersion,createRequire(import.meta.url)('cortico-world-starpost/package.json').version);
     assert.equal((await call(other,'mobile','send',{text:'wrong session'})).isError,true);
     await ok(call(agent,'send','send',{kind:'private',target:'10001',text:'来自 Harness 的私聊'}));
     const peer=async(action,args={})=>{const r=await fetch(server+'/rpc',{method:'POST',headers:{'content-type':'application/json','x-starpost-id':'10001',authorization:'Bearer '+peerToken},body:JSON.stringify({action,args})});const v=await r.json();assert(v.ok,v.error);return v.result;};
@@ -88,6 +91,15 @@ test('two isolated accounts, a real DSH agent, message boundaries, replies and s
     const human=await mobile('/mobile/auth',{action:'register',email,password:'isolated-test-only-123',nickname:'测试主人',challengeId:challenge.challengeId,code:mail.at(-1).code});
     await mobile('/mobile/rpc',{action:'account.bind',args:{botId:who.botId,credential:secret}},human.accessToken);
     await mobile('/mobile/rpc',{action:'owner.address',args:{address:'主人'}},human.accessToken);
+    const humanRpc=(action,args)=>mobile('/mobile/rpc',{action,args},human.accessToken);
+    const baseline=await humanRpc('owner.notifications',{includeChats:true});
+    relay.store.saveGroup({...group,members:[...group.members,human.humanId]});
+    await humanRpc('chat.preferences',{kind:'group',target:group.id,muted:true});
+    await ok(call(agent,'send','send',{kind:'group',target:group.id,text:'群内普通消息'}));
+    await ok(call(agent,'send','send',{kind:'group',target:group.id,text:'给你的提醒',mentions:[human.humanId]}));
+    await ok(call(agent,'mobile','send',{text:'来自 DSH 的专属消息提醒'}));
+    const notices=await humanRpc('owner.notifications',{includeChats:true,chatCursor:baseline.cursor});
+    assert.deepEqual(notices.items.map(n=>[n.kind,n.target,n.mentioned]),[['group',group.id,true],['owner',who.botId,false]]);
     await mobile('/mobile/rpc',{action:'owner.send',args:{text:'通知边界验证',image:{mime:'image/png',base64:pixel.toString('base64')}}},human.accessToken);
     const until=Date.now()+12000;
     while (!JSON.stringify(requests).includes('通知边界验证') && Date.now()<until) await new Promise(r=>setTimeout(r,80));

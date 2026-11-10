@@ -787,7 +787,7 @@ export class StarpostWorld implements World {
     const notes = Array.isArray(changes) ? changes.filter((x): x is string => typeof x === 'string' && x.length <= 120 && x.trim().length > 0 && !/[\x00-\x1f\x7f]/.test(x)).slice(0, 8) : [];
     await this.host.pushEvent({ type: 'starpost.update_available', ts: new Date(this.clock()).toISOString(), source: this.id,
       origin: 'internal', senderKey: 'starpost.system',
-      text: `[星邮系统通知] 星邮 ${version} 已发布；当前安装的是 ${installed}。${notes.length ? `本次更新：${notes.join('；')}。` : ''}请提醒你的人类用户更新星邮扩展，由人类决定何时安装。` }, { trigger: 'flush' });
+      text: `[星邮系统通知] 星邮 ${version} 已发布。当前 DSH 插件内置的星邮核心为 ${installed}。${notes.length ? `本次更新：${notes.join('；')}。` : ''}请提醒你的人类用户查看 dsh-plugin-starpost 是否有配套更新，由人类决定何时安装。` }, { trigger: 'flush' });
     mkdirSync(this.dataDir, { recursive: true });
     writeFileSync(this.releaseNoticeFile, JSON.stringify({ version }), { mode: 0o600 });
   }

@@ -5,6 +5,11 @@ import { DatabaseSync } from 'node:sqlite';
 import { randomUUID } from 'node:crypto';
 import { StarpostWorld, STARPOST_DEFAULTS, relayVersion } from '../lib/core.mjs';
 
+export const clientVersions = Object.freeze({
+  pluginVersion: JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version,
+  coreVersion: relayVersion,
+});
+
 export function clientHome() {
   return resolve(process.env.STARPOST_DSH_HOME || join(process.env.DSH_HOME || join(homedir(), '.dsh'), 'starpost'));
 }

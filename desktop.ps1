@@ -10,13 +10,13 @@ if (-not $env:DSH_HOME) { $env:DSH_HOME = Join-Path $env:USERPROFILE '.ds-harnes
 $profileDir = Join-Path $env:DSH_HOME 'profiles\web'
 if ($Action -eq 'Install') {
   if (-not $Archive) {
-    & (Join-Path $Runtime 'bin\dsh.cmd') plugin --profile web add 'dsh-plugin-starpost@0.1.0' '--registry=https://registry.npmjs.org'
+    & (Join-Path $Runtime 'bin\dsh.cmd') plugin --profile web add 'dsh-plugin-starpost@latest' '--registry=https://registry.npmjs.org'
     exit $LASTEXITCODE
   }
   $vendor = Join-Path $profileDir 'vendor'
   New-Item -ItemType Directory -Force -Path $vendor | Out-Null
-  Copy-Item -LiteralPath $Archive -Destination (Join-Path $vendor 'dsh-plugin-starpost-0.1.0.tgz') -Force
-  & (Join-Path $Runtime 'bin\dsh.cmd') plugin --profile web add 'file:vendor/dsh-plugin-starpost-0.1.0.tgz'
+  Copy-Item -LiteralPath $Archive -Destination (Join-Path $vendor 'dsh-plugin-starpost-0.1.1.tgz') -Force
+  & (Join-Path $Runtime 'bin\dsh.cmd') plugin --profile web add 'file:vendor/dsh-plugin-starpost-0.1.1.tgz'
 } else {
   $cli = Join-Path $profileDir 'node_modules\dsh-plugin-starpost\src\account.mjs'
   if (-not (Test-Path -LiteralPath $cli)) { throw '请先安装插件包' }

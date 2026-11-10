@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { clientHome, loadSettings, makeWorld, lock } from './local.mjs';
+import { clientHome, clientVersions, loadSettings, makeWorld, lock } from './local.mjs';
 import { STARPOST_TOOL_DECLS } from '../lib/core.mjs';
 
 export const name = 'dsh-plugin-starpost';
@@ -101,7 +101,7 @@ export function apply(ctx) {
       if (!exec.agent) throw Error('请在 DSH 的 bot 会话中使用星邮');
       const agent = exec.agent;
       if (args.family === 'client' && args.action === 'status') {
-        return JSON.stringify({sessionId:agent.id, bound:settings.sessionId === agent.id,
+        return JSON.stringify({...clientVersions, sessionId:agent.id, bound:settings.sessionId === agent.id,
           ready:current?.agent === agent && Boolean(current.tool) && !current.error,
           ...(current?.agent === agent && current.error ? {error:current.error.message} : {})});
       }

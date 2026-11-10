@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { clientHome, loadSettings, options, validateSettings, saveSettings, makeWorld, lock, pinServer } from './local.mjs';
+import { clientHome, clientVersions, loadSettings, options, validateSettings, saveSettings, makeWorld, lock, pinServer } from './local.mjs';
 const usage = 'starpost-dsh register --session 会话ID | login --session 会话ID --file 凭据JSON文件 | configure --session 会话ID [--mode active|mixed|passive] | status';
 try {
   const [action, ...args] = process.argv.slice(2);
@@ -28,7 +28,7 @@ try {
         }
       }
       if (action !== 'status') saveSettings(dir,settings);
-      console.log(JSON.stringify({ ...await invoke('viewer','status',[]), sessionId:settings.sessionId ?? null,
+      console.log(JSON.stringify({ ...await invoke('viewer','status',[]), ...clientVersions, sessionId:settings.sessionId ?? null,
         receiveMode:options(settings,dir).receiveMode, directory:dir, credentialFile:join(dir,'starpost-credential.json') }, null, 2));
     } finally { release(); }
   }
